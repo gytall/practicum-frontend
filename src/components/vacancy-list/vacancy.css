@@ -1,14 +1,17 @@
 ul {
-	list-style-type: none; 
+	list-style-type: none;
 	padding: 0;
 	margin: 0;
 	width: 50vw;
 	margin: 0 auto;
 }
 
-
+a {
+	text-decoration: none;
+}
 
 .vacancy-card {
+	cursor: pointer;
 	background-color: #fff;
 	border: 1px solid #ddd;
 	border-radius: 8px;
@@ -55,8 +58,7 @@ ul {
 .search-container {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	margin-bottom: 20px;
+	flex-direction: column;
 }
 
 .salary-inputs {
@@ -81,19 +83,18 @@ ul {
 }
 
 .filter-container {
-  margin-bottom: 20px;
-  display: flex;
+	margin-bottom: 20px;
+	display: flex;
 	flex-direction: column;
-  align-items: center;
+	align-items: center;
 	width: 50vw;
 	margin: 0 auto;
 }
 
-.checkbox{
+.checkbox {
 	display: flex;
 	justify-content: space-between;
 	width: 100%;
 	align-items: center;
 	margin-top: 10px;
 }
-

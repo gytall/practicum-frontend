@@ -1,9 +1,10 @@
 export interface IVacancy {
-	id: string
+	id: number
 	name: string
-	keySkills: string
+	key_skills: string
 	experience: string
-	salary: number
+	salary: string
 	location: string
 	company: string
+	url: string
 }
