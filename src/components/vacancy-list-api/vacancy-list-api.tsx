@@ -1,25 +1,31 @@
 import { useEffect, useState } from 'react'
 import { IVacancy } from '../utils/types'
-import './vacancy.css'
+import '../vacancy-list/vacancy.css'
 
-export function VacancyList() {
+export function VacancyListFromAPI() {
 	const [searchQuery, setSearchQuery] = useState('')
 	const [searchLocation, setSearchLocation] = useState('')
 	const [noExperienceRequired, setNoExperienceRequired] = useState(false)
 	const [noSalarySpecified, setNoSalarySpecified] = useState(false)
 	const [vacancies, setVacancies] = useState<IVacancy[]>([])
 	const [loading, setLoading] = useState(false)
+	const [page, setPage] = useState(0)
+	const [hasMore, setHasMore] = useState(true)
 
 	useEffect(() => {
 		fetchVacancies()
-	}, [])
+	}, [page])
 
 	const fetchVacancies = async () => {
+		if (loading || !hasMore) return
 		setLoading(true)
 		try {
-			const response = await fetch('http://127.0.0.1:5000/vacancies')
+			const response = await fetch(
+				`http://127.0.0.1:5000/vacancies_from_api?page=${page}&per_page=20`
+			)
 			const data = await response.json()
-			setVacancies(data)
+			setVacancies(prev => [...prev, ...data])
+			setHasMore(data.length > 0)
 		} catch (error) {
 			console.error('Error fetching data:', error)
 		} finally {
@@ -34,12 +40,15 @@ export function VacancyList() {
 		const matchLocation = vacancy.location
 			.toLowerCase()
 			.includes(searchLocation.toLowerCase())
-		const matchNoExperience =
-			!noExperienceRequired || vacancy.experience === 'Нет опыта'
+		const matchNoExperience = !noExperienceRequired || vacancy.experience === ''
 		const matchNoSalary = !noSalarySpecified || vacancy.salary === ''
 
 		return matchName && matchLocation && matchNoExperience && matchNoSalary
 	})
+
+	const loadMore = () => {
+		setPage(prev => prev + 1)
+	}
 
 	return (
 		<div>
@@ -94,6 +103,7 @@ export function VacancyList() {
 				))}
 			</ul>
 			{loading && <p>Загрузка...</p>}
+			{hasMore && !loading && <button onClick={loadMore}>Загрузить еще</button>}
 		</div>
 	)
 }
