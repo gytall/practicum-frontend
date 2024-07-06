@@ -1,0 +1,6 @@
+services:
+  app:
+    container_name: my_project_app
+    build: ./
+    ports:
+      - '5000:5000'

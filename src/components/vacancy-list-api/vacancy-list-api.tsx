@@ -2,30 +2,36 @@ import { useEffect, useState } from 'react'
 import { IVacancy } from '../utils/types'
 import '../vacancy-list/vacancy.css'
 
-export function VacancyListFromAPI() {
+export default function VacancyListFromAPI() {
 	const [searchQuery, setSearchQuery] = useState('')
 	const [searchLocation, setSearchLocation] = useState('')
 	const [noExperienceRequired, setNoExperienceRequired] = useState(false)
 	const [noSalarySpecified, setNoSalarySpecified] = useState(false)
 	const [vacancies, setVacancies] = useState<IVacancy[]>([])
 	const [loading, setLoading] = useState(false)
-	const [page, setPage] = useState(0)
-	const [hasMore, setHasMore] = useState(true)
 
 	useEffect(() => {
 		fetchVacancies()
-	}, [page])
+	}, [])
+
+	useEffect(() => {
+		filterVacancies()
+	}, [
+		searchQuery,
+		searchLocation,
+		noExperienceRequired,
+		noSalarySpecified,
+		vacancies,
+	])
 
 	const fetchVacancies = async () => {
-		if (loading || !hasMore) return
 		setLoading(true)
 		try {
 			const response = await fetch(
-				`http://127.0.0.1:5000/vacancies_from_api?page=${page}&per_page=20`
+				'http://127.0.0.1:5000/vacancies_from_api?page=${page}&per_page=20'
 			)
 			const data = await response.json()
-			setVacancies(prev => [...prev, ...data])
-			setHasMore(data.length > 0)
+			setVacancies(data)
 		} catch (error) {
 			console.error('Error fetching data:', error)
 		} finally {
@@ -33,22 +39,23 @@ export function VacancyListFromAPI() {
 		}
 	}
 
-	const filteredVacancies = vacancies.filter(vacancy => {
-		const matchName = vacancy.name
-			.toLowerCase()
-			.includes(searchQuery.toLowerCase())
-		const matchLocation = vacancy.location
-			.toLowerCase()
-			.includes(searchLocation.toLowerCase())
-		const matchNoExperience = !noExperienceRequired || vacancy.experience === ''
-		const matchNoSalary = !noSalarySpecified || vacancy.salary === ''
+	const filterVacancies = () => {
+		return vacancies.filter(vacancy => {
+			const matchName = vacancy.name
+				.toLowerCase()
+				.includes(searchQuery.toLowerCase())
+			const matchLocation = vacancy.location
+				.toLowerCase()
+				.includes(searchLocation.toLowerCase())
+			const matchNoExperience =
+				!noExperienceRequired || vacancy.experience === 'Нет опыта'
+			const matchNoSalary = !noSalarySpecified || vacancy.salary === ''
 
-		return matchName && matchLocation && matchNoExperience && matchNoSalary
-	})
-
-	const loadMore = () => {
-		setPage(prev => prev + 1)
+			return matchName && matchLocation && matchNoExperience && matchNoSalary
+		})
 	}
+
+	const filteredVacancies = filterVacancies()
 
 	return (
 		<div>
@@ -103,7 +110,6 @@ export function VacancyListFromAPI() {
 				))}
 			</ul>
 			{loading && <p>Загрузка...</p>}
-			{hasMore && !loading && <button onClick={loadMore}>Загрузить еще</button>}
 		</div>
 	)
 }

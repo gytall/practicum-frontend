@@ -1,5 +1,5 @@
 import { Link, Route, BrowserRouter as Router, Routes } from 'react-router-dom'
-import { VacancyListFromAPI } from './components/vacancy-list-api/vacancy-list-api'
+import VacancyListFromAPI from './components/vacancy-list-api/vacancy-list-api'
 import { VacancyList } from './components/vacancy-list/vacancy-list'
 
 function App() {
