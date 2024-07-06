@@ -1,6 +1,11 @@
 services:
-  app:
-    container_name: my_project_app
-    build: ./
+  frontend:
+    container_name: react-app
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - '5000:5000'
+      - '3000:3000'
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped

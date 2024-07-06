@@ -1,16 +1,23 @@
-FROM python:3.12-slim
+# Используем официальный образ Node.js с Alpine Linux
+FROM node:14-alpine
 
-
-
-
-RUN mkdir /app 
-
+# Устанавливаем рабочую директорию внутри контейнера
 WORKDIR /app
 
-COPY . .
+# Копируем package.json и package-lock.json для установки зависимостей
+COPY practicum-frontend/package.json practicum-frontend/package-lock.json ./
 
-# RUN pip install --no-cache-dir -r requirements.txt
+# Устанавливаем зависимости
+RUN npm install
 
-# CMD [ "python", "main.py" ]
+# Копируем все исходные файлы из директории practicum-frontend в контейнер
+COPY practicum-frontend/ .
 
-# EXPOSE 8000
+# Собираем приложение React
+RUN npm run build
+
+# Экспонируем порт 3000 для внешнего доступа
+EXPOSE 3000
+
+# Команда для запуска приложения React в контейнере
+CMD ["npm", "start"]
