@@ -1,23 +1,23 @@
-# Используем официальный образ Node.js с Alpine Linux
+# Use the official Node.js image based on Alpine Linux
 FROM node:14-alpine
 
-# Устанавливаем рабочую директорию внутри контейнера
+# Set the working directory inside the container
 WORKDIR /app
 
-# Копируем package.json и package-lock.json для установки зависимостей
-COPY practicum-frontend/package.json practicum-frontend/package-lock.json ./
+# Copy the package.json and package-lock.json files to install dependencies
+COPY package.json package-lock.json ./
 
-# Устанавливаем зависимости
+# Install dependencies
 RUN npm install
 
-# Копируем все исходные файлы из директории practicum-frontend в контейнер
-COPY practicum-frontend/ .
+# Copy all the source files from the current directory to the container
+COPY . .
 
-# Собираем приложение React
+# Build the React application
 RUN npm run build
 
-# Экспонируем порт 3000 для внешнего доступа
+# Expose port 3000 to the outside world
 EXPOSE 3000
 
-# Команда для запуска приложения React в контейнере
+# Command to run the application inside the container
 CMD ["npm", "start"]
